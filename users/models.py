@@ -1,7 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from enum import Enum
 
-# Create your models here.
+class gender_type(Enum):
+    MALE = 'male'
+    FEMALE = 'female'
+    UNDEFINED = 'undefined'
+    
+    @classmethod
+    def choices(cls):
+        return [(i.value, i.name) for i in cls]
+
 
 class BaseUser(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -10,6 +19,7 @@ class BaseUser(models.Model):
     
     class Meta:
         abstract = True
+        ordering = ['-created_at']
         
         
 class User(BaseUser, AbstractUser):
@@ -25,3 +35,5 @@ class User(BaseUser, AbstractUser):
     city = models.CharField(max_length=16)
     pincode = models.CharField(max_length=8, null=True)
     gender = models.CharField( max_length=16)
+    
+    
