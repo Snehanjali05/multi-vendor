@@ -34,6 +34,6 @@ class User(BaseUser, AbstractUser):
     address1 = models.CharField(max_length=512, null=True)
     city = models.CharField(max_length=16)
     pincode = models.CharField(max_length=8, null=True)
-    gender = models.CharField( max_length=16)
+    gender = models.CharField(choices=gender_type.choices(), max_length=16)
     
     
