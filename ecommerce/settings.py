@@ -13,10 +13,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+# SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+SECRET_KEY = 'y0k6b95o4w229j_$5mqrragc-e^=3f45k^pdhi49+&axm@3ik*^9ww1xi7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG') == 'True'
+# DEBUG = os.environ.get('DEBUG') == 'True'
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -35,6 +37,19 @@ DJANGO_APPS = [
 LOCAL_APPS = [
     'users',
     'restaurant',
+    'menu',
+    'order',
+    'review',
+    'promotion',
+    'paymentBilling',
+    'notification',
+    'inventory',
+    'analytics',
+    'ApplicationPlatform',
+    'delivery',
+    'subscription',
+    'loyalty',
+    'cms',
 ]
 
 THIRD_PARTY_APP = [
@@ -84,7 +99,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        # 'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'PASSWORD' : 'post123?',
         'HOST': 'localhost',
         'PORT': '5433',
     }
