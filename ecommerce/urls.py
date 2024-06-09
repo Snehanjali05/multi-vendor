@@ -7,5 +7,9 @@ urlpatterns = [
     path('Restaurant/', include('restaurant.views')),
     path('Menu/', include('menu.views')),
     path('Order/', include('order.views')),
-    path('Delivery/', include('delivery.views')),    
+    path('Delivery/', include('delivery.views')),   
+    path('Review/', include('review.views')),
+    path('Promotion/', include('promotion.views')),
+    path('Notification/', include('notification.views')), 
+    path('Analytics/', include('analytics.urls')), 
 ]

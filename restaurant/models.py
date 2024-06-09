@@ -37,11 +37,11 @@ class RestaurantCategory(models.Model):
     name = models.CharField(max_length=8, db_index=True, choices=CuisineChoices.choices())
     description = models.TextField(blank=True, null=True)
     
-    def __str__(self):
-        return self.name
-    
     class Meta:
         ordering = ['name']
+        
+    def __str__(self):
+        return self.name
     
     
 class Restaurant(models.Model):
@@ -57,11 +57,12 @@ class Restaurant(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        ordering = ['name']
+        
     def __str__(self):
         return self.name
     
-    class Meta:
-        ordering = ['name']
         
     
 class RestaurantPhoto(models.Model):
@@ -71,11 +72,12 @@ class RestaurantPhoto(models.Model):
     description = models.TextField(blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-uploaded_at']
+        
     def __str__(self):
         return f"Photo of {self.restaurant_id.name}"
     
-    class Meta:
-        ordering = ['-uploaded_at']
     
     
 class RestaurantRevenue(models.Model):
@@ -88,12 +90,13 @@ class RestaurantRevenue(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    def __str__(self):
-        return f"Revenue for {self.restaurant_id.name} on {self.date}"
-    
     class Meta:
         ordering = ['-date']
         unique_together = ('restaurant_id', 'date')
+        
+    def __str__(self):
+        return f"Revenue for {self.restaurant_id.name} on {self.date}"
+    
     
     
 class RestaurantHours(models.Model):
@@ -105,10 +108,12 @@ class RestaurantHours(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     
-    def __str__(self):
-        return f"{self.restaurant_id.name} hours on {self.day_of_week}"
-    
     class Meta:
         ordering = ['restaurant_id','day_of_week']
         unique_together = ('restaurant_id', 'day_of_week')
+    
+    
+    def __str__(self):
+        return f"{self.restaurant_id.name} hours on {self.day_of_week}"
+    
     

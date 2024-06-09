@@ -100,6 +100,9 @@ class Address(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        ordering = ['-created_at']
+    
     def __str__(self):
         return f"{self.address_line1} - {self.city} - {self.country}"
         
@@ -118,6 +121,9 @@ class User(BaseUser, AbstractUser):
     notification_preferrence = models.CharField(choices=NotificationType.choices(), max_length=16)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
     
     def __str__(self):
         return f"{self.name} - {self.email}"
@@ -140,6 +146,9 @@ class VendorProfile(models.Model):
     account_status = models.CharField(choices=AccountStatusChoice.choices(), max_length=16) 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
     
     def updated_rating(self, new_rating):
         self.rating = new_rating
@@ -167,6 +176,9 @@ class CustomerProfile(models.Model):
     account_status = models.CharField(choices=AccountStatusChoice.choices(), max_length=16) 
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
     
     def add_loyalty_points(self, points):
         self.loyality_points += points
@@ -203,6 +215,9 @@ class DeliveryPersonProfile(models.Model):
     account_status = models.CharField(choices=AccountStatusChoice.choices(), max_length=16) 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
     
     def __str__(self):
         return f"{self.user_id.name} - {self.email}"

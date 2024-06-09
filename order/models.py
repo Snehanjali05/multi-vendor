@@ -37,16 +37,12 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    def __str__(self):
-        return f"Order {self.id} by {self.customer_id.user_id.username}"
-    
     class Meta:
         ordering = ['-order_time']
-        indexes = [
-            models.Index(fields=['status']),
-            models.Index(fields=['order_time'])
-        ]
         
+    def __str__(self):
+        return f"Order {self.id} by {self.customer_id.user_id.username}"
+
         
 class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
@@ -57,11 +53,12 @@ class OrderItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        unique_together = ('order', 'menu_item')
+        
     def __str__(self):
         return f"{self.quantity} * {self.menuitem_id.name}"
     
-    class Meta:
-        unique_together = ('order', 'menu_item')
         
     
 class OrderStatusHistory(models.Model):
@@ -72,12 +69,10 @@ class OrderStatusHistory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        ordering = ['-update_time']
+    
     def __str__(self):
         return f"{self.order_id} - {self.status}"
     
-    class Meta:
-        ordering = ['-update_time']
-        indexes = [
-            models.Index(fields=['status']),
-            models.Index(fields=['update_time'])
-        ]
+    

@@ -42,6 +42,9 @@ class DeliveryVehicle(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        ordering = ['-created_at']
+        
     def __str__(self):
         return self.registration_number
     
@@ -58,7 +61,9 @@ class Delivery(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    
+    class Meta:
+        ordering = ['-created_at']
+        
     def __str__(self):
         return f"Delivery for order {self.order_id.id}"
     
@@ -70,15 +75,22 @@ class DeliveryFeedback(models.Model):
     customer_id = models.ForeignKey(CustomerProfile, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
      
     def __str__(self):
         return f"Feedback for Delivery {self.delivery_id.id}"
+    
     
 class DeliveryHistory(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
     delivery_id = models.ForeignKey(Delivery, on_delete=models.PROTECT)
     status = models.CharField(choices=StatusChoice.choices(), max_length=16)
     updated_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-updated_at']
     
     def __str__(self):
         return f"{self.delivery_id} - {self.status}"

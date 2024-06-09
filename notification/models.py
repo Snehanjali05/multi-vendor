@@ -24,21 +24,33 @@ class status_choice(Enum):
 
 
 class Notification(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
     recipient_id = models.ForeignKey(CustomerProfile, on_delete=models.PROTECT)
-    notification_type = models.CharField(choices=notification_type.choices(), max_length=16) #enum
-    subject = models.CharField(max_length=64)
-    message = models.TextField()
+    notification_type = models.CharField(choices=notification_type.choices(), max_length=16)
+    subject = models.CharField(max_length=64, null=False)
+    message = models.TextField(null=False)
     sent_at = models.DateTimeField(auto_now_add=True)
     
+    class Meta:
+        ordering = ['-sent_at']
+        
+    def __str__(self):
+        return f"{self.subject} - {self.recipient_id}"
+        
+    
 class NotificationRecipient(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
     user_id = models.ForeignKey(CustomerProfile, on_delete=models.PROTECT)
     preferred_notification_method = models.CharField(choices=notification_type.choices(), max_length=16)
     
+    def __str__(self):
+        return f"{self.user_id} - {self.preferred_notification_method}"
+        
 class NotificationStatus(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
     notification_id = models.ForeignKey(Notification, on_delete=models.PROTECT)
     status = models.CharField(choices=status_choice.choices(), max_length=16)
     
+    def __str__(self):
+        return f"{self.notification_id} - {self.status}"
     

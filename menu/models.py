@@ -23,12 +23,13 @@ class Menu(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     
-    def __str__(self):
-        return self.name
-    
     class Meta:
         ordering = ['created_at']
         
+    def __str__(self):
+        return self.name
+    
+   
     
 class MenuCategory(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
@@ -39,11 +40,12 @@ class MenuCategory(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     
+    class Meta:
+        ordering = ['created_at']
+    
     def __str__(self):
         return self.name
     
-    class Meta:
-        ordering = ['created_at']
     
     
 class MenuItemImage(models.Model):
@@ -69,9 +71,11 @@ class MenuItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        ordering = ['name']
+        
     def __str__(self):
         return self.name
     
-    class Meta:
-        ordering = ['name']
+    
     
