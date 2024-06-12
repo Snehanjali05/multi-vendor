@@ -24,4 +24,4 @@ def validate_lowercase_email(email):
 
 def validate_opening_closing_times(opening_time, closing_time):
     if opening_time >= closing_time:
-        raise ValueError("Closing time must be after opening time.")
+        raise ValidationError("Closing time must be after opening time.")

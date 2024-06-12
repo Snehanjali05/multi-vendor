@@ -14,11 +14,11 @@ def validate_capacity(value):
     
     if unit not in valid_units:
         raise ValidationError(f"Unit must be one of the following: {",".join(valid_units)}")
-    
+    return unit 
     
     
 def validate_delivery_times(expected_delivery_time, actual_delivery_time):
     if actual_delivery_time and actual_delivery_time < expected_delivery_time:
         raise ValidationError("Actual delivery time cannot be before the expected delivery time.")
-    
+    return actual_delivery_time
     

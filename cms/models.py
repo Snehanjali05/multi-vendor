@@ -2,8 +2,9 @@ from django.db import models
 import uuid
 from users.models import User, CustomerProfile
 from enum import Enum
+from django.core.validators import MinValueValidator, MaxValueValidator
 
-class status_type(Enum):
+class StatusType(Enum):
     DRAFT = 'draft'
     PUBLISHED = 'publish'
     ARCHIEVED = 'archieved'
@@ -12,7 +13,7 @@ class status_type(Enum):
     def choices(cls):
         return [(i.value, i.name) for i in cls]
     
-class content_type_choice(Enum):
+class ContentTypeChoice(Enum):
     ARTICLE = 'article'
     BLOG = 'blog'
     PAGE = 'page'
@@ -21,7 +22,7 @@ class content_type_choice(Enum):
     def choices(cls):
         return [(i.value, i.name) for i in cls]
 
-class content_comment_choice(Enum):
+class ContentCommentChoice(Enum):
     APPROVED = 'approved'
     PENDING = 'pending'
     REJECTED = 'rejected'
@@ -30,7 +31,7 @@ class content_comment_choice(Enum):
     def choices(cls):
         return [(i.value, i.name) for i in cls]
 
-class media_type_choice(Enum):
+class MediaTypeChoice(Enum):
     IMAGE = 'image'
     VIDEO = 'video'
     DOCUMENT = 'document'
@@ -44,23 +45,32 @@ class media_type_choice(Enum):
 class Content(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=256)  
-    body = models.TextField()  
+    slug = models.SlugField(unique=True)
+    body = models.TextField() 
+    summary = models.CharField(max_length=512, null=True, blank=True) 
     author = models.ForeignKey(User, on_delete=models.PROTECT) 
     created_at = models.DateTimeField(auto_now_add=True)  
     updated_at = models.DateTimeField(auto_now=True) 
     published_at = models.DateTimeField(null=True, blank=True)  
-    status = models.CharField(choices=status_type.choices(), max_length=16) 
-    content_type = models.CharField(choices=content_type_choice.choices(), max_length=8) 
+    status = models.CharField(choices=StatusType.choices(), max_length=16) 
+    content_type = models.CharField(choices=ContentTypeChoice.choices(), max_length=8) 
     
+    class Meta:
+        ordering = ['-created_at']
+        
     def __str__(self):
         return self.title
 
 class ContentCategory(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=128) 
-    description = models.TextField(null=True, blank=True)  
+    description = models.TextField(null=True, blank=True) 
+    slug = models.SlugField(unique=True) 
     created_at = models.DateTimeField(auto_now_add=True)  
     updated_at = models.DateTimeField(auto_now=True)  
+    
+    class Meta:
+        ordering = ['name']
     
     def __str__(self):
         return self.name
@@ -69,8 +79,12 @@ class ContentCategory(models.Model):
 class ContentTag(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=128) 
+    slug = models.SlugField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True) 
-    updated_at = models.DateTimeField(auto_now=True)  
+    updated_at = models.DateTimeField(auto_now=True) 
+    
+    class Meta:
+        ordering = ['name'] 
 
     def __str__(self):
         return self.name
@@ -82,7 +96,10 @@ class ContentComment(models.Model):
     body = models.TextField()  
     created_at = models.DateTimeField(auto_now_add=True)  
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(choices=content_comment_choice.choices(), max_length=8) 
+    status = models.CharField(choices=ContentCommentChoice.choices(), max_length=8) 
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.author_id} - {self.content_id}"
@@ -91,9 +108,14 @@ class ContentMedia(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     content_id = models.ForeignKey(Content, on_delete=models.PROTECT)
     media_file = models.FileField(upload_to='content_media/') 
-    media_type = models.CharField(choices=media_type_choice.choices(), max_length=8)  
+    media_type = models.CharField(choices=MediaTypeChoice.choices(), max_length=8)  
+    alt_text = models.CharField(max_length=256, null=True, blank=True)
+    caption = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)  
     updated_at = models.DateTimeField(auto_now=True)  
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.media_type} - {self.content_id.title}"
@@ -102,9 +124,13 @@ class ContentRating(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     content_id = models.ForeignKey(Content, on_delete=models.PROTECT)
     user_id = models.ForeignKey(CustomerProfile, on_delete=models.PROTECT) 
-    rating = models.PositiveSmallIntegerField()  
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])  
     created_at = models.DateTimeField(auto_now_add=True) 
     updated_at = models.DateTimeField(auto_now=True)  
+
+    class Meta:
+        ordering = ['-created_at']
+        unique_together = ('content_id', 'user_id')
 
     def __str__(self):
         return f"{self.content_id.title} - {self.rating}"
