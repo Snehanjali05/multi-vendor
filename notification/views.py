@@ -22,7 +22,7 @@ router.register('notify', NotificationViewSet, 'notify')
 router.register('notify-recipient', NotificationRecipientViewSet, 'notify-recipient')
 router.register('notify-status', NotificationStatusViewSet, 'notify-status')
 
-urlpatterns = [
-    path('', include('router.urls'))
-]
     
+urlpatterns = [
+    path('', include(router.urls))
+]

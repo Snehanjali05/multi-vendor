@@ -33,5 +33,5 @@ router.register('reward', RewardViewSet, 'reward')
 router.register('redemption', RedemptionViewSet, 'redemption')
 
 urlpatterns = [
-    path('', include('router.urls'))
+    path('', include(router.urls))
 ]

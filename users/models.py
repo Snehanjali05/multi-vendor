@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from enum import Enum
 import uuid 
-from restaurant.models import Restaurant
-from menu.models import MenuItem
 from .utils import validate_phone_number, validate_lowercase_email
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator,\
     URLValidator
@@ -118,7 +116,7 @@ class User(BaseUser, AbstractUser):
     preferred_language = models.CharField(max_length=16, default='en')
     preferred_currency = models.CharField(max_length=8, default='USD')
     account_status = models.CharField(choices=AccountStatusChoice.choices(), max_length=16) 
-    notification_preferrence = models.CharField(choices=NotificationType.choices(), max_length=16)
+    notification_preferrence = models.CharField(choices=NotificationType.choices(), max_length=32)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -131,13 +129,13 @@ class User(BaseUser, AbstractUser):
     
 class VendorProfile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
-    user_id = models.ForeignKey(User, null=False, db_index=True, on_delete=models.PROTECT)
+    user_id = models.OneToOneField(User, null=False, db_index=True, on_delete=models.PROTECT)
     business_name = models.CharField(max_length=32)
     business_license = models.CharField(max_length=32, unique=True)
     tax_id = models.CharField(max_length=32, unique=True)
     email = models.EmailField(db_index=True, unique=True, null=False, validators=[validate_lowercase_email])
     mobile = models.CharField(max_length=16, db_index=True, unique=True, null=False, validators=[validate_phone_number])
-    business_address = models.OneToOneField(Address, max_length=128)
+    business_address = models.OneToOneField(Address, max_length=128, on_delete=models.PROTECT)
     website = models.URLField(validators=[URLValidator])
     social_media_links = models.URLField()
     description = models.TextField()
@@ -165,14 +163,14 @@ class VendorProfile(models.Model):
     
 class CustomerProfile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
-    user_id = models.ForeignKey(User, null=False, db_index=True, on_delete=models.PROTECT)
+    user_id = models.OneToOneField(User, null=False, db_index=True, on_delete=models.PROTECT)
     mobile = models.CharField(max_length=16, null=False, db_index=True, validators=[validate_phone_number])
     email = models.EmailField(db_index=True, unique=True, null=False, validators=[validate_lowercase_email])
     address_id = models.OneToOneField(Address, on_delete=models.PROTECT)
     loyality_points = models.IntegerField(default=0)
     preferred_payment_method = models.CharField(max_length=16, choices=PaymentMethodChoice.choices())
-    fav_restaurants = models.ManyToManyField(Restaurant)
-    fav_dishes = models.ManyToManyField(MenuItem)
+    fav_restaurants = models.ManyToManyField('restaurant.Restaurant')
+    fav_dishes = models.ManyToManyField('menu.MenuItem')
     account_status = models.CharField(choices=AccountStatusChoice.choices(), max_length=16) 
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
@@ -195,11 +193,11 @@ class CustomerProfile(models.Model):
 
 class DeliveryPersonProfile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
-    user_id = models.ForeignKey(User, null=False, db_index=True, on_delete=models.PROTECT)
+    user_id = models.OneToOneField(User, null=False, db_index=True, on_delete=models.PROTECT)
     mobile = models.CharField(max_length=16,db_index=True,null=False, unique=True, validators=[validate_phone_number])
     email = models.EmailField(db_index=True, unique=True, null=False, validators=[validate_lowercase_email])
     address_id = models.OneToOneField(Address, on_delete=models.PROTECT)
-    vehicle_type = models.CharField(max_length=8, choices=VehicleTypeChoice.choices())
+    vehicle_type = models.CharField(max_length=16, choices=VehicleTypeChoice.choices())
     vehicle_number = models.CharField(max_length=16, unique=True, validators=[RegexValidator(
         regex=r'^[A-Z]{2}\d{2}[A-Za-z0-9]{6}$',
         message="enter a valid vehicle number"

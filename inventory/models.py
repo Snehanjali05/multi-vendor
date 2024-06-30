@@ -1,8 +1,6 @@
 from django.db import models
 import uuid
-from restaurant.models import Restaurant
 from enum import Enum
-from users.models import User, Address
 from django.core.validators import MinValueValidator
 from .utils import validate_unit, validate_lowercase_email,validate_order_date
 
@@ -50,7 +48,7 @@ class InventoryItem(models.Model):
 class InventoryStock(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
     item_id = models.ForeignKey(InventoryItem, on_delete=models.PROTECT, db_index=True)
-    restaurant_id = models.ForeignKey(Restaurant, on_delete=models.PROTECT, db_index=True)
+    restaurant_id = models.ForeignKey('restaurant.Restaurant', on_delete=models.PROTECT, db_index=True)
     quantity = models.IntegerField(validators=[MinValueValidator(0)])
     last_updated = models.DateTimeField(auto_now=True)
     
@@ -63,9 +61,9 @@ class InventoryStock(models.Model):
 class InventorySupplier(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
     name = models.CharField(max_length=32, db_index=True)
-    contact_name_id = models.ForeignKey(User, on_delete=models.PROTECT, db_index=True)
+    contact_name_id = models.ForeignKey('users.User', on_delete=models.PROTECT, db_index=True)
     email = models.EmailField(validators=[validate_lowercase_email])
-    address = models.OneToOneField(Address, blank=True, null=True)
+    address = models.OneToOneField('users.Address', on_delete=models.PROTECT, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -79,7 +77,7 @@ class InventorySupplier(models.Model):
 class InventoryOrder(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
     supplier_id = models.ForeignKey(InventorySupplier, on_delete=models.PROTECT, db_index=True)
-    restaurant_id = models.ForeignKey(Restaurant, on_delete=models.PROTECT, db_index=True)
+    restaurant_id = models.ForeignKey('restaurant.Restaurant', on_delete=models.PROTECT, db_index=True)
     order_date = models.DateTimeField(auto_now_add=True, validators=[validate_order_date])
     expected_delivery_date = models.DateTimeField()
     status = models.CharField(choices=StatusType.choices(), max_length=16) 

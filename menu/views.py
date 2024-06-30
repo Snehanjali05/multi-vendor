@@ -29,6 +29,9 @@ router.register('menu-category', MenuCategoryViewSet, 'menu-category')
 router.register('menu-item', MenuItemViewSet, 'menu-item')
 router.register('menu-item-image', MenuItemImageViewSet, 'menu-item-image')
 
+urlpatterns = [
+    path('', include(router.urls))
+]
 
 
 urlpatterns = [

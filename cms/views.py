@@ -38,5 +38,5 @@ router.register('content-media', ContentMediaViewSet, 'content-media')
 router.register('content-rating', ContentRatingViewSet, 'content-rating')
 
 urlpatterns = [
-    path('', include('router.urls'))
+    path('', include(router.urls))
 ]

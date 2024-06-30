@@ -40,5 +40,5 @@ router.register('inv-order-item', InventoryOrderItemViewSet, 'inv-order-item')
 
 
 urlpatterns = [
-    path('', include('router.urls'))
+    path('', include(router.urls))
 ]

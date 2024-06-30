@@ -50,6 +50,8 @@ router.register('popular-item-analytics', PopularItemAnalyticsViewSet, 'popular-
 
 
 urlpatterns = [
-    path('', include('routers.urls'))
+    path('', include(router.urls))
 ]
+
+
     

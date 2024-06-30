@@ -28,5 +28,5 @@ router.register('platform-feedback', PlatformFeedbackViewSet, 'platform-feedback
 router.register('platform-admin-log', PlatformAdminLogViewSet, 'platform-admin-log')
 
 urlpatterns = [
-    path('', include('router.urls'))
+    path('', include(router.urls))
 ]

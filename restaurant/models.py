@@ -1,10 +1,9 @@
 from django.db import models
-from users.models import Address
 from enum import Enum
 import uuid
-from users.models import VendorProfile
 from .utils import validate_phone_number, validate_lowercase_email, validate_opening_closing_times
 from django.core.validators import MinValueValidator, URLValidator
+
 
 class DayChoices(Enum):
     MONDAY = 'monday'
@@ -46,11 +45,11 @@ class RestaurantCategory(models.Model):
     
 class Restaurant(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
-    vendor_id = models.ForeignKey(VendorProfile, null=False, db_index=True, on_delete=models.PROTECT)
+    vendor_id = models.ForeignKey('users.VendorProfile', null=False, db_index=True, on_delete=models.PROTECT)
     category_id = models.ForeignKey(RestaurantCategory, db_index=True, on_delete=models.PROTECT)
     name = models.CharField(max_length=128, db_index=True)
     description = models.TextField(blank=True, null=True)
-    address_id = models.OneToOneField(Address, on_delete=models.PROTECT)
+    address_id = models.OneToOneField('users.Address', on_delete=models.PROTECT)
     mobile = models.CharField(max_length=16, unique=True,db_index=True, validators=[validate_phone_number])
     email = models.EmailField(unique=True, db_index=True, validators=[validate_lowercase_email])
     website = models.URLField(validators=[URLValidator], null=True, blank=True)

@@ -23,5 +23,5 @@ router.register('subscript-plan', SubscriptionPlanViewSet, 'subscript-plan')
 router.register('subscript-history', SubscriptionHistoryViewSet, 'subscript-history')
 
 urlpatterns = [
-    path('', include('router.urls'))
+    path('', include(router.urls))
 ]

@@ -24,6 +24,7 @@ router.register('promo', PromotionViewSet, 'promo')
 router.register('promo-usage', PromotionUsageViewSet, 'promo-usage')
 router.register('promo-tag', PromotionTagViewSet, 'promo-tag')
 
+
 urlpatterns = [
-    path('', include('router.urls'))
+    path('', include(router.urls))
 ]

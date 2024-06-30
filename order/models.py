@@ -47,14 +47,14 @@ class Order(models.Model):
 class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
     order_id = models.ForeignKey(Order, on_delete=models.PROTECT)
-    menuitem_id = models.ForeignKey(MenuItem, on_delete=models.PROTECT)
+    menu_item_id = models.ForeignKey(MenuItem, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.0)])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        unique_together = ('order', 'menu_item')
+        unique_together = ('order_id', 'menu_item_id')
         
     def __str__(self):
         return f"{self.quantity} * {self.menuitem_id.name}"
